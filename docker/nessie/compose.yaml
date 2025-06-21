@@ -1,0 +1,64 @@
+name: nessie
+# Nessie (Iceberg REST Catalog)
+services:
+  nessie:
+    image: ghcr.io/projectnessie/nessie
+    container_name: nessie
+    environment:
+      - nessie.version.store.type=IN_MEMORY
+      - nessie.catalog.default-warehouse=warehouse
+      - nessie.catalog.warehouses.warehouse.location=s3a://nessie/warehouse/
+      - nessie.catalog.service.s3.default-options.endpoint=http://127.0.0.1:10000/
+      - nessie.catalog.service.s3.default-options.access-key=urn:nessie-secret:quarkus:nessie.catalog.secrets.access-key
+      - nessie.catalog.service.s3.default-options.path-style-access=true
+      - nessie.catalog.service.s3.default-options.auth-type=STATIC
+      - nessie.catalog.secrets.access-key.name=tjsuGBKvWEzc1zUBDXwn
+      - nessie.catalog.secrets.access-key.secret=N6uXW5kfXXBRr83EPh8rmxgBuXZCSowWxH5Eox1s
+      - nessie.catalog.service.s3.default-options.region=us-east-1
+      - nessie.server.authentication.enabled=false
+      #
+      # - nessie.version.store.type=JDBC2
+      # - nessie.version.store.persist.jdbc.datasource=postgresql
+      # - quarkus.datasource.postgresql.jdbc.url=jdbc:postgresql://localhost:5432/my_database
+      # - quarkus.datasource.postgresql.username=<your username>
+      # - quarkus.datasource.postgresql.password=<your password>
+    # depends_on:
+    #   postgres:
+    #     condition: service_healthy
+    ports:
+      - "19120:19120"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:19120/api/v1/config"]
+      interval: 30s
+    networks:
+      - projeto-lakehouse-1
+
+  # PostgreSQL (Para metadados do Nessie)
+  # postgres:
+  #   image: postgres:17
+  #   container_name: postgres
+  #   environment:
+  #     POSTGRES_USER: nessie
+  #     POSTGRES_PASSWORD: password123
+  #     POSTGRES_DB: nessie
+  #   volumes:
+  #     - type: volume
+  #       source: nessie-data
+  #       target: /var/lib/postgresql/data
+  #       volume: {}
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U nessie -d nessie"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 5
+  #   networks:
+  #     - projeto-lakehouse-1
+
+networks:
+  projeto-lakehouse-1:
+    name: projeto-lakehouse-1
+    external: true
+
+# volumes:
+#   nessie-data:
+#     name: nessie-data

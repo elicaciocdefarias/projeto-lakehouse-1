@@ -1,0 +1,33 @@
+name: dremio
+  
+services:
+  dremio:
+    platform: linux/x86_64
+    image: dremio/dremio-oss:latest
+    ports:
+      - mode: ingress
+        target: 9047
+        published: "9047"
+        protocol: tcp
+      - mode: ingress
+        target: 31010
+        published: "31010"
+        protocol: tcp
+      - mode: ingress
+        target: 32010
+        published: "32010"
+        protocol: tcp
+      - mode: ingress
+        target: 45678
+        published: "45678"
+        protocol: tcp
+    container_name: dremio
+    environment:
+      - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Dpaths.dist=file:///opt/dremio/data/dist
+    networks:
+      - projeto-lakehouse-1
+
+networks:
+  projeto-lakehouse-1:
+    name: projeto-lakehouse-1
+    external: true

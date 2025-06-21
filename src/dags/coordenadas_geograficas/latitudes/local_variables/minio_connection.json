@@ -1,0 +1,6 @@
+{
+    "aws_region": "us-east-1",
+    "aws_access_key_id": "tjsuGBKvWEzc1zUBDXwn",
+    "aws_secret_access_key": "N6uXW5kfXXBRr83EPh8rmxgBuXZCSowWxH5Eox1s",
+    "aws_s3_endpoint": "http://127.0.0.1:10000"
+}
